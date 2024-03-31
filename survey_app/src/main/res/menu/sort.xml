@@ -15,7 +15,9 @@
         android:title="@string/toolbar_item_settings"
         app:showAsAction="always" />
 
-    <item  android:title="@string/sort_by_title">
+    <item
+        android:id="@+id/sort_menu"
+        android:title="@string/sort_by_title">
         <menu>
             <group android:checkableBehavior="single">
                 <item android:title="@string/tableId"
