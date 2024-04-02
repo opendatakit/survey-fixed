@@ -84,6 +84,12 @@ android {
         singleVariant("snapshotDebug")
         singleVariant("primaryRelease")
     }
+    testOptions {
+        animationsDisabled = true
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 configurations.all {
