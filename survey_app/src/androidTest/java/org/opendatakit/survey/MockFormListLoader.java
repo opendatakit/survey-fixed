@@ -1,4 +1,4 @@
-package org.opendatakit.survey.utilities;
+package org.opendatakit.survey;
 
 import android.content.Context;
 

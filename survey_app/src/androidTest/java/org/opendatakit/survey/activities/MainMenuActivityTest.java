@@ -1,4 +1,4 @@
-package org.opendatakit.survey;
+package org.opendatakit.survey.activities;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -28,12 +28,11 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.opendatakit.consts.IntentConsts;
-import org.opendatakit.survey.activities.MainMenuActivity;
+import org.opendatakit.survey.R;
 import org.opendatakit.survey.fragments.FormChooserListFragment;
 import org.opendatakit.survey.utilities.FormInfo;
-import org.opendatakit.survey.utilities.MockFormData;
-import org.opendatakit.survey.utilities.MockFormListLoader;
-import org.opendatakit.survey.utilities.TableIdFormIdVersionListAdapter;
+import org.opendatakit.survey.MockFormData;
+import org.opendatakit.survey.MockFormListLoader;
 
 import java.util.ArrayList;
 import java.util.Collections;
