@@ -71,7 +71,6 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            #- build/outputs/apk/snapshot/debug/services_app-snapshot-debug.apk
             - survey_app/build/outputs/apk/snapshot/debug/survey_app-snapshot-debug.apk
 
   deploy:
@@ -120,6 +119,6 @@ workflows:
       - test:
           requires:
             - build
-#      - deploy:
-#          requires:
-#            - build
+      - deploy:
+          requires:
+            - build
