@@ -64,14 +64,38 @@ jobs:
           name: Build Survey
           command: ./gradlew assembleSnapshotDebug
 
-      - persist_to_workspace:
-          root: .
-          paths:
-            - "survey_app/build/outputs"
-
       - store_artifacts:
           name: Store Build Artifacts
           path: survey_app/build/outputs/apk
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            #- build/outputs/apk/snapshot/debug/services_app-snapshot-debug.apk
+            - survey_app/build/outputs/apk/snapshot/debug/survey_app-snapshot-debug.apk
+
+  deploy:
+    docker:
+      - image: cimg/python:3.12.3
+    working_directory: ~/project
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Install Github Releases CLI
+          command: pip install githubrelease
+      - run:
+          name: Create Github Releases and Upload APK
+          command: |
+            APK_FILE="survey_app/build/outputs/apk/snapshot/debug/survey_app-snapshot-debug.apk"
+            SHORT_HASH=$(echo $CIRCLE_SHA1 | cut -c -7)
+            TAG_NAME="snapshot-$SHORT_HASH"
+            
+            githubrelease release $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME create $TAG_NAME --name $TAG_NAME --body "Automated release by CircleCI"
+            githubrelease asset $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME upload $TAG_NAME $APK_FILE
+
+
 
 #  deploy:
 #    docker:
