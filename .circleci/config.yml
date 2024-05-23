@@ -30,8 +30,10 @@ jobs:
 
       - android/run-tests:
           test-command: ./gradlew testSnapshotDebugUnitTest
+
       - android/run-tests:
           test-command: ./gradlew connectedSnapshotDebugAndroidTest
+
       - android/save-gradle-cache:
           cache-prefix: v1
 
@@ -41,6 +43,7 @@ jobs:
       - store_artifacts:
           name: Store Test Results
           path: survey_app/build/outputs/androidTest-results
+
       - store_artifacts:
           name: Store Test Reports
           path: tables_app/build/reports
@@ -53,13 +56,17 @@ jobs:
       - run:
           name: Chmod Permissions
           command: sudo chmod +x gradlew
+
       - android/restore-gradle-cache:
           cache-prefix: v1
+
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
+
       - android/save-gradle-cache:
           cache-prefix: v1
+
       - run:
           name: Build Survey
           command: ./gradlew assembleSnapshotDebug
@@ -71,54 +78,12 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - survey_app/build/outputs/apk/snapshot/debug/survey_app-snapshot-debug.apk
-
-  deploy:
-    docker:
-      - image: cimg/python:3.12.3
-    working_directory: ~/project
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/project
-      - run:
-          name: Install Github Releases CLI
-          command: pip install githubrelease
-      - run:
-          name: Create Github Releases and Upload APK
-          command: |
-            APK_FILE="survey_app/build/outputs/apk/snapshot/debug/survey_app-snapshot-debug.apk"
-            SHORT_HASH=$(echo $CIRCLE_SHA1 | cut -c -7)
-            TAG_NAME="snapshot-$SHORT_HASH"
-            
-            githubrelease release $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME create $TAG_NAME --name $TAG_NAME --body "Automated release by CircleCI"
-            githubrelease asset $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME upload $TAG_NAME $APK_FILE
-
-
-
-#  deploy:
-#    docker:
-#      - image: cimg/go:1.21.6
-#    steps:
-#      - attach_workspace:
-#          at: .
-#      - run:
-#          name: Deploy Build to Github
-#          command: |
-#            go install github.com/tcnksm/ghr@latest
-#            echo "export SHORT_HASH=$(echo $CIRCLE_SHA1 | cut -c -7)" >> $BASH_ENV
-#            VERSION=v1
-#            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./survey_app/build/outputs/apk/demoBasic/debug/survey_app-demo-basic-debug.apk
-
-
+            - survey_app/build/outputs/apk
 
 workflows:
   build-test-deploy-workflow:
     jobs:
       - build
       - test:
-          requires:
-            - build
-      - deploy:
           requires:
             - build
