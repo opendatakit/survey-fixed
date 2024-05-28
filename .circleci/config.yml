@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   android: circleci/android@2.4.0
+
 jobs:
   test:
     description: Runs unit tests and instrumented tests on the Survey app
@@ -12,6 +13,7 @@ jobs:
 
     steps:
       - checkout
+
       - run:
           name: Chmod Permissions
           command: sudo chmod +x gradlew
@@ -27,6 +29,34 @@ jobs:
           no-window: true
           restore-gradle-cache-prefix: v1
           post-emulator-launch-assemble-command: ./gradlew installSnapshotDebug
+
+      - run:
+          name: Wait for Emulator Boot
+          command: |
+            #!/bin/bash
+            boot_completed="0"
+            timeout_in_sec=300
+            while [[ ${boot_completed} -ne 1 && ${timeout_in_sec} -gt 0 ]]; do
+              sleep 1
+              boot_completed=$(adb shell getprop sys.boot_completed 2>&1 | tr -d '\r')
+              timeout_in_sec=$((timeout_in_sec-1))
+            done
+            if [ ${boot_completed} -ne 1 ]; then
+              echo "Emulator boot timed out"
+              exit 1
+            fi
+
+      - run:
+          name: Start ADB Server
+          command: adb start-server
+
+      - run:
+          name: Wait for ADB
+          command: |
+            for i in {1..30}; do
+              adb get-state && break
+              sleep 1
+            done
 
       - android/run-tests:
           test-command: ./gradlew testSnapshotDebugUnitTest
@@ -53,6 +83,7 @@ jobs:
       - image: cimg/android:2024.01
     steps:
       - checkout
+
       - run:
           name: Chmod Permissions
           command: sudo chmod +x gradlew
