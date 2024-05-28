@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.intent.Intents;
@@ -63,14 +64,14 @@ public class MainMenuActivityTest {
 
         activityRule.getScenario().onActivity(activity -> {
             FragmentManager fragmentManager = activity.getSupportFragmentManager();
-            fragmentManager.executePendingTransactions(); // Ensure all pending transactions are executed
+            Fragment fragment = fragmentManager.findFragmentById(R.id.main_content);
 
-            FormChooserListFragment fragment = (FormChooserListFragment) fragmentManager
-                    .findFragmentById(R.id.main_content);
-            if (fragment != null) {
-                fragment.onLoadFinished(mockLoader, Forms);
-            } else {
+            if (fragment instanceof FormChooserListFragment) {
+                ((FormChooserListFragment) fragment).onLoadFinished(mockLoader, Forms);
+            } else if (fragment == null) {
                 fail("Expected FormChooserListFragment but found null.");
+            } else {
+                fail("Expected FormChooserListFragment but found " + fragment.getClass().getSimpleName());
             }
         });
     }
