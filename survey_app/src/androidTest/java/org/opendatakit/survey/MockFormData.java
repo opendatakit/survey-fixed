@@ -16,13 +16,12 @@ public class MockFormData {
         mockForms.add(new FormInfo("tableId4", "formId4", "version4", "Form 4", "Subtext 4"));
         mockForms.add(new FormInfo("tableId5", "formId5", "version5", "Form 5", "Subtext 5"));
 
+        // Logging for debugging
+        for (FormInfo form : mockForms) {
+            System.out.println("MockForm: " + form.formDisplayName);
+        }
+
         return mockForms;
     }
 
-    public static void main(String[] args) {
-        List<FormInfo> mockForms = generateMockForms();
-        for (FormInfo form : mockForms) {
-            System.out.println(form.formDisplayName);
-        }
-    }
 }

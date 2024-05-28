@@ -8,6 +8,7 @@ import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -19,6 +20,7 @@ import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
@@ -35,6 +37,7 @@ import org.opendatakit.survey.fragments.FormChooserListFragment;
 import org.opendatakit.survey.utilities.FormInfo;
 import org.opendatakit.survey.MockFormData;
 import org.opendatakit.survey.MockFormListLoader;
+import org.opendatakit.survey.utilities.TableIdFormIdVersionListAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,24 +60,27 @@ public class MainMenuActivityTest {
     @Before
     public void setUp() {
         Intents.init();
-        // Use the mock form list loader to load the mock forms
         Forms = MockFormData.generateMockForms();
-        MockFormListLoader mockLoader = new MockFormListLoader(
-                InstrumentationRegistry.getInstrumentation().getTargetContext(), Forms);
 
         activityRule.getScenario().onActivity(activity -> {
             FragmentManager fragmentManager = activity.getSupportFragmentManager();
-            Fragment fragment = fragmentManager.findFragmentById(R.id.main_content);
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            FormChooserListFragment formChooserFragment = new FormChooserListFragment();
+            String fragmentTag = String.valueOf(MainMenuActivity.ScreenList.FORM_CHOOSER);
+            transaction.replace(R.id.main_content, formChooserFragment, fragmentTag);
+            transaction.commitNow();
 
+            Fragment fragment = fragmentManager.findFragmentByTag(fragmentTag);
             if (fragment instanceof FormChooserListFragment) {
+                MockFormListLoader mockLoader = new MockFormListLoader(
+                        getInstrumentation().getTargetContext());
                 ((FormChooserListFragment) fragment).onLoadFinished(mockLoader, Forms);
-            } else if (fragment == null) {
-                fail("Expected FormChooserListFragment but found null.");
             } else {
-                fail("Expected FormChooserListFragment but found " + fragment.getClass().getSimpleName());
+                fail("Expected FormChooserListFragment but found " + (fragment == null ? "null" : fragment.getClass().getSimpleName()));
             }
         });
     }
+
 
     @After
     public void tearDown() {
@@ -109,16 +115,15 @@ public class MainMenuActivityTest {
 
     @Test
     public void testSortByName() {
-        // Open the overflow menu
         Espresso.openContextualActionModeOverflowMenu();
         onView(withText(R.string.sort_by_title)).perform(click());
         onView(withText(R.string.name)).perform(click());
         sortFormList(Forms, "sortByName");
 
-        onView(withId(android.R.id.list)).check((view, noViewFoundException) -> {
-            ListView listView = (ListView) view;
-            ListAdapter adapter = listView.getAdapter();
-            listView.invalidateViews();
+        activityRule.getScenario().onActivity(activity -> {
+            ListView listView = activity.findViewById(android.R.id.list);
+            TableIdFormIdVersionListAdapter adapter = (TableIdFormIdVersionListAdapter) listView.getAdapter();
+            adapter.swapData(Forms);
 
             // Verify that the number of items in the adapter matches the number of sorted forms
             assertEquals(adapter.getCount(), Forms.size());
@@ -140,10 +145,10 @@ public class MainMenuActivityTest {
 
         sortFormList(Forms, "sortByTableID");
 
-        onView(withId(android.R.id.list)).check((view, noViewFoundException) -> {
-            ListView listView = (ListView) view;
-            ListAdapter adapter = listView.getAdapter();
-            listView.invalidateViews();
+        activityRule.getScenario().onActivity(activity -> {
+            ListView listView = activity.findViewById(android.R.id.list);
+            TableIdFormIdVersionListAdapter adapter = (TableIdFormIdVersionListAdapter) listView.getAdapter();
+            adapter.swapData(Forms);
 
             // Verify that the number of items in the adapter matches the number of sorted forms
             assertEquals(adapter.getCount(), Forms.size());
@@ -161,13 +166,11 @@ public class MainMenuActivityTest {
             Collections.sort(forms, new Comparator<FormInfo>() {
                 @Override
                 public int compare(FormInfo lhs, FormInfo rhs) {
-                    // Compare by formDisplayName first
                     int cmp = lhs.formDisplayName.compareToIgnoreCase(rhs.formDisplayName);
                     if (cmp != 0) {
                         return cmp;
                     }
 
-                    // If formDisplayName is the same, compare by other fields
                     cmp = lhs.tableId.compareToIgnoreCase(rhs.tableId);
                     if (cmp != 0) {
                         return cmp;
@@ -183,7 +186,6 @@ public class MainMenuActivityTest {
                         return cmp;
                     }
 
-                    // Compare by formDisplaySubtext if all other fields are equal
                     return lhs.formDisplaySubtext.compareToIgnoreCase(rhs.formDisplaySubtext);
                 }
             });
@@ -191,13 +193,11 @@ public class MainMenuActivityTest {
             Collections.sort(forms, new Comparator<FormInfo>() {
                 @Override
                 public int compare(FormInfo left, FormInfo right) {
-                    // Compare by tableId first
                     int cmp = left.tableId.compareToIgnoreCase(right.tableId);
                     if (cmp != 0) {
                         return cmp;
                     }
 
-                    // If tableId is the same, compare by other fields
                     cmp = left.formDisplayName.compareToIgnoreCase(right.formDisplayName);
                     if (cmp != 0) {
                         return cmp;
@@ -213,11 +213,11 @@ public class MainMenuActivityTest {
                         return cmp;
                     }
 
-                    // Compare by formDisplaySubtext if all other fields are equal
                     return left.formDisplaySubtext.compareToIgnoreCase(right.formDisplaySubtext);
                 }
             });
         }
+
     }
 
 

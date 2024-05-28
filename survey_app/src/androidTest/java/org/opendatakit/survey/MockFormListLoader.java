@@ -8,13 +8,13 @@ import org.opendatakit.survey.utilities.FormInfo;
 
 import java.util.ArrayList;
 
+
 public class MockFormListLoader extends AsyncTaskLoader<ArrayList<FormInfo>> {
     private ArrayList<FormInfo> mMockForms;
 
-
-    public MockFormListLoader(Context context, ArrayList<FormInfo> mockForms) {
+    public MockFormListLoader(Context context) {
         super(context);
-        mMockForms = mockForms;
+        this.mMockForms = MockFormData.generateMockForms(); // Assuming MockData.generateForms() is available
     }
 
     @Override
@@ -25,7 +25,11 @@ public class MockFormListLoader extends AsyncTaskLoader<ArrayList<FormInfo>> {
     @Override
     protected void onStartLoading() {
         super.onStartLoading();
-        deliverResult(mMockForms);
+        if (mMockForms != null) {
+            deliverResult(mMockForms);
+        }
+        forceLoad();
     }
+
 }
 
