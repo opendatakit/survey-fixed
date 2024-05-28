@@ -28,6 +28,12 @@ jobs:
           restore-gradle-cache-prefix: v1
           post-emulator-launch-assemble-command: ./gradlew installSnapshotDebug
 
+      - run:
+          name: Wait for Emulator to Boot
+          command: |
+            # Wait up to 300 seconds for the emulator to start
+            circle-android wait-for-boot
+
       - android/run-tests:
           test-command: ./gradlew testSnapshotDebugUnitTest
       - android/run-tests:
@@ -86,8 +92,6 @@ jobs:
 #            echo "export SHORT_HASH=$(echo $CIRCLE_SHA1 | cut -c -7)" >> $BASH_ENV
 #            VERSION=v1
 #            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./survey_app/build/outputs/apk/demoBasic/debug/survey_app-demo-basic-debug.apk
-
-
 
 workflows:
   build-test-deploy-workflow:

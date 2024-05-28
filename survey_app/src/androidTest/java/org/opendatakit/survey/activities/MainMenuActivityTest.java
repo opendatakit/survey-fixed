@@ -10,6 +10,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -51,28 +52,33 @@ public class MainMenuActivityTest {
     private final String appName = "default";
 
     ArrayList<FormInfo> Forms;
+
     @Before
     public void setUp() {
         Intents.init();
         // Use the mock form list loader to load the mock forms
         Forms = MockFormData.generateMockForms();
         MockFormListLoader mockLoader = new MockFormListLoader(
-                InstrumentationRegistry.getInstrumentation().getTargetContext(),Forms);
+                InstrumentationRegistry.getInstrumentation().getTargetContext(), Forms);
 
         activityRule.getScenario().onActivity(activity -> {
             FragmentManager fragmentManager = activity.getSupportFragmentManager();
+            fragmentManager.executePendingTransactions(); // Ensure all pending transactions are executed
+
             FormChooserListFragment fragment = (FormChooserListFragment) fragmentManager
                     .findFragmentById(R.id.main_content);
-            fragment.onLoadFinished(mockLoader, Forms);
+            if (fragment != null) {
+                fragment.onLoadFinished(mockLoader, Forms);
+            } else {
+                fail("Expected FormChooserListFragment but found null.");
+            }
         });
-
-
     }
+
     @After
     public void tearDown() {
         Intents.release();
     }
-
 
     @Test
     public void testSyncToolbarItem_whenCLickedShouldSendCorrectIntent() {
@@ -124,7 +130,6 @@ public class MainMenuActivityTest {
         });
     }
 
-
     @Test
     public void testSortByTableId() {
         // Open the overflow menu
@@ -145,10 +150,9 @@ public class MainMenuActivityTest {
             // Verify that each item in the adapter is in the correct sorted order
             for (int i = 0; i < adapter.getCount(); i++) {
                 FormInfo item = (FormInfo) adapter.getItem(i);
-                assertEquals(item.tableId,Forms.get(i).tableId);
+                assertEquals(item.tableId, Forms.get(i).tableId);
             }
         });
-
     }
 
     private void sortFormList(ArrayList<FormInfo> forms, String sortingOrder) {
