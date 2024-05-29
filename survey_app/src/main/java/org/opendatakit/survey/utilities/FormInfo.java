@@ -10,8 +10,8 @@ public final class FormInfo {
   public final String formDisplayName;
   public final String formDisplaySubtext;
 
-  FormInfo(String tableId, String formId, String formVersion, String formDisplayName, String
-      formDisplaySubtext) {
+  public FormInfo(String tableId, String formId, String formVersion, String formDisplayName, String
+          formDisplaySubtext) {
     this.tableId = tableId;
     this.formId = formId;
     this.formVersion = formVersion;
