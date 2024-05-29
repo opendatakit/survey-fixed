@@ -4,13 +4,18 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+
+import static org.hamcrest.Matchers.allOf;
 
 import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import android.content.ComponentName;
+import android.content.Intent;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.GrantPermissionRule;
@@ -25,8 +30,9 @@ import org.opendatakit.survey.R;
 import org.opendatakit.survey.activities.MainMenuActivity;
 
 
-@RunWith(AndroidJUnit4.class)
 public class TestMainMenuActivity {
+
+    private final String appName = "default";
 
     @Rule
     public GrantPermissionRule permissionRule = GrantPermissionRule.grant(
@@ -65,8 +71,10 @@ public class TestMainMenuActivity {
         onView(withId(R.id.action_sync)).perform(click());
 
         // Verify that the sync activity is launched
-        intended(hasComponent(new ComponentName(IntentConsts.Sync.APPLICATION_NAME,
-                IntentConsts.Sync.ACTIVITY_NAME)));
+        intended(allOf(hasComponent(new ComponentName(IntentConsts.Sync.APPLICATION_NAME,
+                IntentConsts.Sync.ACTIVITY_NAME)),
+                hasAction(Intent.ACTION_DEFAULT),
+                hasExtra(IntentConsts.INTENT_KEY_APP_NAME, appName)));
     }
 
     @Ignore //till service pipeline is fixed
