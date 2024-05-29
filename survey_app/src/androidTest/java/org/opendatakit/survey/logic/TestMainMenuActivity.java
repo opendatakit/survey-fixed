@@ -17,14 +17,12 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import android.content.ComponentName;
 import android.content.Intent;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.GrantPermissionRule;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.opendatakit.consts.IntentConsts;
 import org.opendatakit.survey.R;
 import org.opendatakit.survey.activities.MainMenuActivity;
