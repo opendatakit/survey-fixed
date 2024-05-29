@@ -15,12 +15,6 @@ applicationScripts.each {
 apply plugin: 'com.android.application'
 
 android {
-    testOptions {
-        animationsDisabled = true
-        unitTests {
-            includeAndroidResources = true
-        }
-    }
     namespace(surveyNamespace)
     compileSdk(compileVersion)
 
