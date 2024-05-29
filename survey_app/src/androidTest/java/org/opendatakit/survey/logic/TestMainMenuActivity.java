@@ -16,6 +16,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.GrantPermissionRule;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,6 +69,7 @@ public class TestMainMenuActivity {
                 IntentConsts.Sync.ACTIVITY_NAME)));
     }
 
+    @Ignore //till service pipeline is fixed
     @Test
     public void testSettingsMenuItem() {
         // Click on the "Settings" menu item
