@@ -17,20 +17,17 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import android.content.ComponentName;
 import android.content.Intent;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.GrantPermissionRule;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.opendatakit.consts.IntentConsts;
 import org.opendatakit.survey.R;
 import org.opendatakit.survey.activities.MainMenuActivity;
 
 
-@RunWith(AndroidJUnit4.class)
 public class TestMainMenuActivity {
 
     private final String appName = "default";
@@ -69,6 +66,8 @@ public class TestMainMenuActivity {
 
     @Test
     public void testSyncMenuItem() {
+        // Wait for the view to be displayed
+        onView(withId(R.id.action_sync)).check(matches(isDisplayed()));
         // Click on the "Sync" menu item
         onView(withId(R.id.action_sync)).perform(click());
 
@@ -78,6 +77,7 @@ public class TestMainMenuActivity {
                 hasAction(Intent.ACTION_DEFAULT),
                 hasExtra(IntentConsts.INTENT_KEY_APP_NAME, appName)));
     }
+
 
     @Ignore //till service pipeline is fixed
     @Test
