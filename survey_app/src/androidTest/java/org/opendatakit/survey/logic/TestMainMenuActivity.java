@@ -12,6 +12,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 import static org.hamcrest.Matchers.allOf;
 
+import androidx.test.espresso.IdlingRegistry;
+import androidx.test.espresso.IdlingResource;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import android.content.ComponentName;
@@ -31,6 +33,7 @@ import org.opendatakit.survey.activities.MainMenuActivity;
 public class TestMainMenuActivity {
 
     private final String appName = "default";
+    private SimpleIdlingResourceImpl idlingResource;
 
     @Rule
     public GrantPermissionRule permissionRule = GrantPermissionRule.grant(
@@ -46,12 +49,16 @@ public class TestMainMenuActivity {
     public void setUp() {
         // Initialize Espresso-Intents
         Intents.init();
+        idlingResource = new SimpleIdlingResourceImpl();
+        IdlingRegistry.getInstance().register(idlingResource);
     }
 
     @After
     public void tearDown() {
         // Release Espresso-Intents
         Intents.release();
+
+        IdlingRegistry.getInstance().unregister(idlingResource);
     }
 
    @Ignore // till service pipeline is fixed
@@ -66,6 +73,8 @@ public class TestMainMenuActivity {
 
     @Test
     public void testSyncMenuItem() {
+
+        idlingResource.setIdleState(true);
         // Wait for the view to be displayed
         onView(withId(R.id.action_sync)).check(matches(isDisplayed()));
         // Click on the "Sync" menu item
