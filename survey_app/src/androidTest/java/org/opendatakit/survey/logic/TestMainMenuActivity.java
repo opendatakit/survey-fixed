@@ -33,7 +33,6 @@ import org.opendatakit.survey.activities.MainMenuActivity;
 public class TestMainMenuActivity {
 
     private final String appName = "default";
-    private SimpleIdlingResourceImpl idlingResource;
 
     @Rule
     public GrantPermissionRule permissionRule = GrantPermissionRule.grant(
@@ -49,19 +48,14 @@ public class TestMainMenuActivity {
     public void setUp() {
         // Initialize Espresso-Intents
         Intents.init();
-        idlingResource = new SimpleIdlingResourceImpl();
-        IdlingRegistry.getInstance().register(idlingResource);
     }
 
     @After
     public void tearDown() {
         // Release Espresso-Intents
         Intents.release();
-
-        IdlingRegistry.getInstance().unregister(idlingResource);
     }
 
-   @Ignore // till service pipeline is fixed
     @Test
     public void testToolbarLogoNavigation() {
         // Click on the toolbar logo
@@ -71,13 +65,11 @@ public class TestMainMenuActivity {
         onView(withId(R.id.toolbarMainActivity)).check(matches(isDisplayed()));
     }
 
+    @Ignore // till service pipeline is fixed
     @Test
     public void testSyncMenuItem() {
 
-        idlingResource.setIdleState(true);
-        // Wait for the view to be displayed
-        onView(withId(R.id.action_sync)).check(matches(isDisplayed()));
-        // Click on the "Sync" menu item
+         // Click on the "Sync" menu item
         onView(withId(R.id.action_sync)).perform(click());
 
         // Verify that the sync activity is launched
@@ -87,8 +79,6 @@ public class TestMainMenuActivity {
                 hasExtra(IntentConsts.INTENT_KEY_APP_NAME, appName)));
     }
 
-
-    @Ignore //till service pipeline is fixed
     @Test
     public void testSettingsMenuItem() {
         // Click on the "Settings" menu item
