@@ -55,4 +55,23 @@ public class FormIdStructTest {
 	assertEquals(fis.appName, APP_NAME);
   }
 
+	@Test
+	public void testCopyConstructor() {
+		Uri formUri = Uri.parse("content://" + FormsProviderAPI.AUTHORITY + "/" + APP_NAME + "/" + TABLE_ID + "/1");
+		File formDefFile = ODKFileUtils.asAppFile(APP_NAME, FORM_PATH);
+		Date now = new Date();
+
+		FormIdStruct original = new FormIdStruct(formUri, formDefFile, FORM_PATH,
+				FORM_ID, FORM_VERSION, TABLE_ID, now);
+		FormIdStruct copy = new FormIdStruct(original);
+
+		assertEquals(copy.lastDownloadDate, now);
+		assertEquals(copy.tableId, TABLE_ID);
+		assertEquals(copy.formVersion, FORM_VERSION);
+		assertEquals(copy.formId, FORM_ID);
+		assertEquals(copy.formPath, FORM_PATH);
+		assertEquals(copy.formDefFile, formDefFile);
+		assertEquals(copy.formUri, formUri);
+		assertEquals(copy.appName, APP_NAME);
+	}
 }
