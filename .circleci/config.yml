@@ -20,30 +20,20 @@ jobs:
           avd-name: avd
           install: true
           system-image: system-images;android-30;default;x86_64
-          additional-args: --sdcard 2048M
+          additional-args: -c 2048M
 
       - android/start-emulator:
           avd-name: avd
           no-window: true
-          restore-gradle-cache-prefix: v1
           post-emulator-launch-assemble-command: ./gradlew installSnapshotDebug
-
+      - android/disable-animations
       - android/run-tests:
-          test-command: ./gradlew testSnapshotDebugUnitTest
-
+          test-command: ./gradlew createSnapshotDebugUnitTestCoverageReport
       - android/run-tests:
-          test-command: ./gradlew connectedSnapshotDebugAndroidTest
-
-      - android/save-gradle-cache:
-          cache-prefix: v1
-
-      - store_test_results:
-          path: survey_app/build/outputs/androidTest-results
-
+          test-command: ./gradlew createSnapshotDebugAndroidTestCoverageReport
       - store_artifacts:
           name: Store Test Results
           path: survey_app/build/outputs/androidTest-results
-
       - store_artifacts:
           name: Store Test Reports
           path: tables_app/build/reports
