@@ -15,6 +15,12 @@ applicationScripts.each {
 apply plugin: 'com.android.application'
 
 android {
+    testOptions {
+        animationsDisabled = true
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
     namespace(surveyNamespace)
     compileSdk(compileVersion)
 
@@ -146,13 +152,8 @@ dependencies {
     androidTestImplementation 'androidx.test:core:1.5.0'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.5.1'
 
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.mockito:mockito-core:2.19.0'
-    testImplementation 'androidx.annotation:annotation:1.7.1'
-    testImplementation 'androidx.test:core:1.5.0'
-    testImplementation 'org.robolectric:robolectric:4.8.1'
-    testImplementation 'android.arch.core:core-testing:1.1.1'
 
+    testImplementation 'junit:junit:4.13.2'
 }
 
 task grantPermissionForODKXApp {
