@@ -28,11 +28,13 @@ the License.
 			android:visibility="gone" />
 
 	<!-- empty view -->
+	<!-- Font for this should be Montserrat -->
 	<TextView
 			android:id="@android:id/empty"
 			android:gravity="center"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:text="@string/database_unavailable" />
+			android:text="@string/database_unavailable"
+			android:fontFamily="@font/montserrat"/>
 
 </LinearLayout>
