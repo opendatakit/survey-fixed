@@ -33,7 +33,7 @@
 			android:key="common.username"
 			android:title="@string/username"
 			android:inputType="textNoSuggestions"
-			android:dialogTitle="@string/change_username"
+			android:dialogTitle="@string/change_username" 
 			android:persistent="false"/>
 		<EditTextPreference
 			android:id="@+id/password"
