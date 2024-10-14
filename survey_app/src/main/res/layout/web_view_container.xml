@@ -28,7 +28,6 @@ the License.
 			android:visibility="gone" />
 
 	<!-- empty view -->
-	<!-- Font for this should be Montserrat -->
 	<TextView
 			android:id="@android:id/empty"
 			android:gravity="center"
