@@ -28,6 +28,7 @@ the License.
         android:paddingRight="20dp"
         android:text="@string/initializing"
         android:textColor="@color/black"
-        android:textSize="21sp" />
+        android:textSize="21sp"
+        android:fontFamily="@font/montserrat"/>
 
 </LinearLayout>

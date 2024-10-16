@@ -44,8 +44,10 @@
 				android:background="@android:color/transparent"
 				android:textSize="22sp"
 				android:textStyle="bold"
+				android:fontFamily="@font/montserrat"
 				android:paddingLeft="7dip"
 				android:paddingRight="7dip" />
+
 			<TextView
 				android:id="@+id/url"
 				android:text="@string/app_url"
@@ -53,6 +55,7 @@
 				android:layout_height="fill_parent"
 				android:background="@android:color/transparent"
 				android:textSize="14sp"
+				android:fontFamily="@font/montserrat"
 				android:paddingLeft="7dip"
 				android:paddingRight="7dip" />
 		</LinearLayout>
