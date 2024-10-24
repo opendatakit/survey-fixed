@@ -29,6 +29,9 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import androidx.core.splashscreen.SplashScreen;
+
 import org.opendatakit.activities.BaseLauncherActivity;
 import org.opendatakit.application.ToolAwareApplication;
 import org.opendatakit.consts.IntentConsts;
@@ -91,7 +94,10 @@ public class SplashScreenActivity extends BaseLauncherActivity {
     // this splash screen should be a blank slate
     requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+    SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
+
     super.onCreate(savedInstanceState);
+    splashScreen.setKeepOnScreenCondition(() -> true);
   }
 
   @Override
